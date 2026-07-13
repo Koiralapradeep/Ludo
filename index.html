@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Puttu Ludo - Classic Board Game App</title>
+  
+  <!-- PWA Metadata -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6f3d20">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="application-name" content="Puttu Ludo">
+  <meta name="apple-mobile-web-app-title" content="Puttu Ludo">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="shortcut icon" type="image/png" href="icon.png">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  
+  <link rel="stylesheet" href="style.css?v=22">
+</head>
+<body>
+
+  <!-- Floating Header Controls -->
+  <div class="floating-controls">
+    <button class="btn-icon" id="install-btn" title="Install Puttu Ludo" aria-label="Install Puttu Ludo">📲</button>
+    <button class="btn-icon" id="mute-btn" title="Mute/Unmute Sounds">🔊</button>
+    <button class="btn-icon" id="reset-btn" title="Back to Main Menu">🔄</button>
+    <button class="btn-icon" id="info-btn" title="How to Play / Rules">ℹ️</button>
+  </div>
+
+  <div class="modal-overlay" id="install-help" aria-hidden="true">
+    <div class="modal-content install-help-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Install Puttu Ludo</h3>
+        <button class="modal-close" id="install-help-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="install-help-text">Open your browser menu and choose “Install app” or “Add to Home Screen”.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Game Container -->
+  <main class="game-container" id="main-container">
+    
+    <!-- Left: Play Field (Symmetrical Profiles + Board) -->
+    <div class="play-field-wrapper">
+      <!-- Top Profiles Row -->
+      <div class="profiles-row top-row">
+        <div class="player-profile-card red" id="profile-red">
+          <div class="profile-info">
+            <span class="profile-name">Red Player</span>
+            <span class="profile-role" id="role-red">Human</span>
+          </div>
+        </div>
+
+        <!-- Center Turn Indicator Badge -->
+        <div class="turn-indicator-badge" id="turn-indicator-badge">
+          <span class="turn-dot" id="turn-dot"></span>
+          <span class="turn-text" id="turn-text">Red Player's Turn</span>
+        </div>
+
+        <div class="player-profile-card green" id="profile-green">
+          <div class="profile-info">
+            <span class="profile-name">Green Player</span>
+            <span class="profile-role" id="role-green">Human</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: SVG Ludo Board -->
+      <section class="board-wrapper">
+        <div class="ludo-board-container">
+          <svg id="ludo-svg" viewBox="0 0 600 600" class="svg-board">
+            <!-- SVG content generated programmatically by game.js -->
+          </svg>
+        </div>
+      </section>
+
+      <!-- Bottom Profiles Row -->
+      <div class="profiles-row bottom-row">
+        <div class="player-profile-card yellow" id="profile-yellow">
+          <div class="profile-info">
+            <span class="profile-name">Yellow Player</span>
+            <span class="profile-role" id="role-yellow">AI</span>
+          </div>
+        </div>
+
+        <!-- Center Shared 3D Dice Wrapper -->
+        <div class="shared-dice-wrapper">
+          <div class="dice-container" id="dice-container">
+            <div class="dice-cube" id="dice-cube">
+              <div class="dice-face face-1"><span class="dice-dot"></span></div>
+              <div class="dice-face face-6">
+                <span class="dice-dot"></span><span class="dice-dot"></span>
+                <span class="dice-dot"></span><span class="dice-dot"></span>
+                <span class="dice-dot"></span><span class="dice-dot"></span>
+              </div>
+              <div class="dice-face face-2"><span class="dice-dot"></span><span class="dice-dot"></span></div>
+              <div class="dice-face face-5">
+                <span class="dice-dot"></span><span class="dice-dot"></span>
+                <span class="dice-dot"></span><span class="dice-dot"></span>
+                <span class="dice-dot"></span>
+              </div>
+              <div class="dice-face face-3"><span class="dice-dot"></span><span class="dice-dot"></span><span class="dice-dot"></span></div>
+              <div class="dice-face face-4">
+                <span class="dice-dot"></span><span class="dice-dot"></span>
+                <span class="dice-dot"></span><span class="dice-dot"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="player-profile-card blue" id="profile-blue">
+          <div class="profile-info">
+            <span class="profile-name">Blue Player</span>
+            <span class="profile-role" id="role-blue">AI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Start Menu Lobby Overlay -->
+  <div class="modal-overlay open" id="start-menu">
+    <div class="modal-content start-lobby-content">
+      <div class="lobby-header">
+        <h1 class="lobby-logo">PUTTU LUDO</h1>
+        <p class="lobby-subtitle">A timeless race to home</p>
+      </div>
+      <div class="lobby-body">
+        <div class="player-config-cards">
+          <!-- Red Config -->
+          <div class="config-card red-theme" data-color="red">
+            <div class="config-icon">🔴</div>
+            <div class="config-label">Red Player</div>
+            <div class="config-select-group">
+              <button class="config-opt active" data-val="human">Human</button>
+              <button class="config-opt" data-val="ai">AI</button>
+              <button class="config-opt" data-val="inactive">Off</button>
+            </div>
+          </div>
+          <!-- Green Config -->
+          <div class="config-card green-theme" data-color="green">
+            <div class="config-icon">🟢</div>
+            <div class="config-label">Green Player</div>
+            <div class="config-select-group">
+              <button class="config-opt active" data-val="human">Human</button>
+              <button class="config-opt" data-val="ai">AI</button>
+              <button class="config-opt" data-val="inactive">Off</button>
+            </div>
+          </div>
+          <!-- Blue Config -->
+          <div class="config-card blue-theme" data-color="blue">
+            <div class="config-icon">🔵</div>
+            <div class="config-label">Blue Player</div>
+            <div class="config-select-group">
+              <button class="config-opt" data-val="human">Human</button>
+              <button class="config-opt active" data-val="ai">AI</button>
+              <button class="config-opt" data-val="inactive">Off</button>
+            </div>
+          </div>
+          <!-- Yellow Config -->
+          <div class="config-card yellow-theme" data-color="yellow">
+            <div class="config-icon">🟡</div>
+            <div class="config-label">Yellow Player</div>
+            <div class="config-select-group">
+              <button class="config-opt" data-val="human">Human</button>
+              <button class="config-opt active" data-val="ai">AI</button>
+              <button class="config-opt" data-val="inactive">Off</button>
+            </div>
+          </div>
+        </div>
+        <div class="lobby-footer">
+          <button class="start-btn" id="start-match-btn" onclick="startMatch()">Start Match</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Modal -->
+  <div class="modal-overlay" id="modal-info" style="--modal-color: var(--blue); --modal-glow: var(--blue-glow); --modal-border: rgba(0, 212, 255, 0.2);">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Game Manual &amp; Rules</h3>
+        <button class="modal-close" onclick="closeModal('info')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4 style="margin-bottom: 0.5rem; color: white;">Objective</h4>
+        <p style="margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.5; color: var(--text-secondary);">
+          The objective of Ludo is to move your four tokens from your base yard around the outer track, down your color runway, and into the center Home triangle before your opponents.
+        </p>
+
+        <h4 style="margin-bottom: 0.5rem; color: white;">Rules of Play</h4>
+        <ul style="margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); padding-left: 1.25rem;">
+          <li>Roll the dice on your turn. You must roll a **6** to move a token from its Base yard to the Starting tile.</li>
+          <li>Rolling a **6** grants an extra roll. (Rolling three 6s in a row forfeits the turn).</li>
+          <li>Tokens travel clockwise around the perimeter path.</li>
+          <li>If you land on a cell occupied by an opponent's token, their token is **captured** and returned to their base yard. A capture grants you an extra roll!</li>
+          <li>Tiles marked with a **star** are safe zones. Tokens cannot be captured while resting on safe zones.</li>
+          <li>Getting a token into the home triangle also awards an extra roll.</li>
+        </ul>
+
+        <h4 style="margin-bottom: 0.5rem; color: white;">Install on Mobile</h4>
+        <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary);">
+          Since this is a Progressive Web App, you can install it on your Android or iOS homescreen! Click the menu button in your browser and select **"Install App"** or **"Add to Home Screen"** to launch it fullscreen without browser frames.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Victory Overlay -->
+  <div class="victory-overlay" id="victory-overlay">
+    <div class="victory-content">
+      <h2 class="victory-title">VICTORY!</h2>
+      <p class="victory-message" id="victory-message">Red Player Wins! Congratulations!</p>
+      <button class="victory-btn" onclick="closeVictory(true)">Back to Menu</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+  <script>
+    console.log("PUTTU LUDO: index.html loaded. Version 23.");
+
+    let deferredInstallPrompt = null;
+    const installBtn = document.getElementById('install-btn');
+    const installHelp = document.getElementById('install-help');
+    const installHelpText = document.getElementById('install-help-text');
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+    function showInstallHelp(message) {
+      installHelpText.textContent = message;
+      installHelp.classList.add('open');
+      installHelp.setAttribute('aria-hidden', 'false');
+    }
+
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      if (!isStandalone) installBtn.classList.add('install-ready');
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (isStandalone) {
+        showInstallHelp('Puttu Ludo is already installed on this device.');
+      } else if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        installBtn.classList.remove('install-ready');
+      } else if (isIOS) {
+        showInstallHelp('In Safari, tap the Share button, then choose “Add to Home Screen” and tap Add.');
+      } else {
+        showInstallHelp('Open your browser menu and choose “Install app” or “Add to Home Screen”.');
+      }
+    });
+
+    document.getElementById('install-help-close').addEventListener('click', () => installHelp.classList.remove('open'));
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      installBtn.classList.remove('install-ready');
+      installBtn.textContent = '✓';
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(registration => registration.update())
+          .catch(error => console.error('Service worker registration failed:', error));
+      });
+    }
+  </script>
+</body>
+</html>
