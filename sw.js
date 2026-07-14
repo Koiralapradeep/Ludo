@@ -1,9 +1,10 @@
-const CACHE_NAME = 'puttu-ludo-v25';
+const CACHE_NAME = 'puttu-ludo-v27';
 
 const APP_SHELL = [
   './',
   './index.html',
   './style.css',
+  './intro.js',
   './game.js',
   './manifest.json',
   './icon-192.png',
@@ -82,7 +83,7 @@ self.addEventListener('fetch', event => {
   }
 
   event.respondWith(
-    caches.match(request).then(cachedResponse => {
+    caches.match(request, { ignoreSearch: true }).then(cachedResponse => {
       const networkResponse = fetch(request).then(response => {
         if (response && response.ok) {
           const copy = response.clone();
@@ -96,6 +97,6 @@ self.addEventListener('fetch', event => {
       });
 
       return cachedResponse || networkResponse;
-    }).catch(() => caches.match(request))
+    }).catch(() => caches.match(request, { ignoreSearch: true }))
   );
 });

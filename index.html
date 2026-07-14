@@ -23,6 +23,70 @@
 </head>
 <body>
 
+  <!-- Cinematic Animated Intro Screen -->
+  <div id="cinematic-intro" class="cinematic-intro-container" onclick="skipIntro()" style="cursor: pointer;" title="Click anywhere to skip intro">
+    <!-- Canvas for Particle Effects -->
+    <canvas id="intro-canvas" class="intro-particle-canvas"></canvas>
+
+    <!-- Stylized Central Ludo Board -->
+    <div class="intro-board-center" id="intro-board-center">
+      <svg viewBox="0 0 100 100" class="intro-board-svg">
+        <rect x="2" y="2" width="96" height="96" fill="#fffaf0" stroke="#502e19" stroke-width="2"/>
+        
+        <!-- Red Base -->
+        <rect x="2" y="2" width="38" height="38" fill="#a8332d" stroke="#502e19" stroke-width="1.2"/>
+        <rect x="10" y="10" width="22" height="22" fill="#fffaf0" stroke="#502e19" stroke-width="0.8"/>
+        <!-- Green Base -->
+        <rect x="60" y="2" width="38" height="38" fill="#357456" stroke="#502e19" stroke-width="1.2"/>
+        <rect x="68" y="10" width="22" height="22" fill="#fffaf0" stroke="#502e19" stroke-width="0.8"/>
+        <!-- Yellow Base -->
+        <rect x="2" y="60" width="38" height="38" fill="#b6922c" stroke="#502e19" stroke-width="1.2"/>
+        <rect x="10" y="68" width="22" height="22" fill="#fffaf0" stroke="#502e19" stroke-width="0.8"/>
+        <!-- Blue Base -->
+        <rect x="60" y="60" width="38" height="38" fill="#315f86" stroke="#502e19" stroke-width="1.2"/>
+        <rect x="68" y="68" width="22" height="22" fill="#fffaf0" stroke="#502e19" stroke-width="0.8"/>
+        
+        <!-- Center triangles -->
+        <polygon points="40,40 50,50 40,60" fill="#a8332d" stroke="#502e19" stroke-width="0.8"/>
+        <polygon points="60,40 50,50 60,60" fill="#315f86" stroke="#502e19" stroke-width="0.8"/>
+        <polygon points="40,40 50,50 60,40" fill="#357456" stroke="#502e19" stroke-width="0.8"/>
+        <polygon points="40,60 50,50 60,60" fill="#b6922c" stroke="#502e19" stroke-width="0.8"/>
+        
+        <!-- Grid division lines -->
+        <line x1="40" y1="2" x2="40" y2="98" stroke="#502e19" stroke-width="1"/>
+        <line x1="60" y1="2" x2="60" y2="98" stroke="#502e19" stroke-width="1"/>
+        <line x1="2" y1="40" x2="98" y2="40" stroke="#502e19" stroke-width="1"/>
+        <line x1="2" y1="60" x2="98" y2="60" stroke="#502e19" stroke-width="1"/>
+
+        <!-- Colored runways -->
+        <rect x="40" y="8" width="20" height="32" fill="none"/>
+        <path d="M 46.6 8 L 46.6 40 M 53.3 8 L 53.3 40" stroke="#502e19" stroke-width="0.6"/>
+        <path d="M 8 46.6 L 40 46.6 M 8 53.3 L 40 53.3" stroke="#502e19" stroke-width="0.6"/>
+        <path d="M 60 46.6 L 92 46.6 M 60 53.3 L 92 53.3" stroke="#502e19" stroke-width="0.6"/>
+        <path d="M 46.6 60 L 46.6 92 M 53.3 60 L 53.3 92" stroke="#502e19" stroke-width="0.6"/>
+        
+        <!-- Red Runway fill -->
+        <rect x="6" y="46.6" width="34" height="6.7" fill="#a8332d" stroke="#502e19" stroke-width="0.6"/>
+        <!-- Green Runway fill -->
+        <rect x="46.6" y="6" width="6.7" height="34" fill="#357456" stroke="#502e19" stroke-width="0.6"/>
+        <!-- Blue Runway fill -->
+        <rect x="60" y="46.6" width="34" height="6.7" fill="#315f86" stroke="#502e19" stroke-width="0.6"/>
+        <!-- Yellow Runway fill -->
+        <rect x="46.6" y="60" width="6.7" height="34" fill="#b6922c" stroke="#502e19" stroke-width="0.6"/>
+      </svg>
+    </div>
+
+    <!-- Simple Horizontal Roll Dice -->
+    <div class="intro-dice-horizontal-container" id="intro-dice-wrapper">
+      <div class="intro-dice-flat" id="intro-dice-cube">
+        <!-- Face showing 6 dots -->
+        <span class="dot d-tl"></span><span class="dot d-tr"></span>
+        <span class="dot d-ml"></span><span class="dot d-mr"></span>
+        <span class="dot d-bl"></span><span class="dot d-br"></span>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Header Controls -->
   <div class="floating-controls">
     <button class="btn-icon" id="install-btn" title="Install Puttu Ludo" aria-label="Install Puttu Ludo">📲</button>
@@ -126,7 +190,7 @@
   </main>
 
   <!-- Start Menu Lobby Overlay -->
-  <div class="modal-overlay open" id="start-menu">
+  <div class="modal-overlay" id="start-menu">
     <div class="modal-content start-lobby-content">
       <div class="lobby-header">
         <h1 class="lobby-logo">PUTTU LUDO</h1>
@@ -224,6 +288,7 @@
 
   <!-- Scripts -->
   <script src="audio.js"></script>
+  <script src="intro.js"></script>
   <script src="game.js"></script>
   <script>
     console.log("PUTTU LUDO: index.html loaded. Version 23.");
